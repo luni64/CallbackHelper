@@ -1,11 +1,12 @@
 # CallbackHelper
 
-Helper class to generate invocable callbacks from various inputs. E.g., pointers to free functions, pointers to static member functions, lambdas (capturing an non-capturing) and functors.
+## Purpose:
+CallbackHelper is a tool to generate invocable callbacks from various inputs. E.g., pointers to free functions, pointers to static member functions, lambdas (capturing an non-capturing) and functors.
+CallbackHelper allows library writers to implement std::function like callback APIs without the memory overhead of std::functions.
 
-**Purpose** Allow library writers to implement std::function like callback APIs without the memory overhead of std::functions.
+### Usage:
 
-**Simple usage:**
-
+Simple example:
 ```c++
 #include "Arduino.h"
 
@@ -30,7 +31,7 @@ void loop()
 }
 
 ```
-Of course the same would be possible by storing a simple pointer to the free function and invoke it in loop(). It gets more interesting if we want to use more difficult objects as callbacks. E.g., non static member functions, lambdas:
+Of course the same would be possible by storing a simple pointer to the free function and invoke it in loop(). It gets more interesting, if we want to use more difficult objects as callbacks. E.g., non static member functions, lambdas:
 
 Generate callback from a lambda expression:
 ```c++
@@ -42,8 +43,10 @@ Generate callback from non static member function (class `Test`, instance `test`
 callback = cbh.makeCallback([] {test.myFunc()); }, 0);
 ```
 
-Here a complete example showing the possibilities:
+The callbackHelper class will store the actual callback in a preallocated memory pool to avoid dynamic memory allocation.  `makeCallback(...)` returns a base class pointer to the
+generated callback. Thus, user code doesn't need to know the actual type of the generated callback. Instead, it can store the returned base class pointer for later use in a variable of type pointer to `callback_t`.
 
+Here a complete example showing some possibilities:
 ```c++
 #include "Arduino.h"
 #include "callbackHelper.h"
