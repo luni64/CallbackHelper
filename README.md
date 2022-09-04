@@ -1,7 +1,7 @@
 # CallbackHelper
 
-## Purpose:
-CallbackHelper is a tool to generate invocable callbacks from various inputs. E.g., pointers to free functions, pointers to static member functions, lambdas (capturing an non-capturing) and functors.
+### Purpose:
+CallbackHelper is a tool to generate invocable callbacks from various inputs. E.g., pointers to free functions, pointers to static member functions, lambdas (capturing as well as non-capturing) and functors.
 CallbackHelper allows library writers to implement std::function like callback APIs without the memory overhead of std::functions.
 
 ### Usage:
@@ -31,9 +31,9 @@ void loop()
 }
 
 ```
-Of course the same would be possible by storing a simple pointer to the free function and invoke it in loop(). It gets more interesting, if we want to use more difficult objects as callbacks. E.g., non static member functions, lambdas:
+Of course, the same would be possible by storing a pointer to the free function and invoke it in `loop()`. The `callbackHelper` gets more useful if we want to support more complex objects as callbacks. E.g., non static member functions, lambdas or functors:
 
-Generate callback from a lambda expression:
+Here an example how to generate a callback from a lambda expression:
 ```c++
 callback = cbh.makeCallback([] { Serial.printf("non capturing lambda\n"); }, 0);
 ```
