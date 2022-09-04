@@ -8,7 +8,7 @@ CallbackHelper allows library writers to implement std::function like callback A
 
 Simple example:
 ```c++
-#include "Arduino.h"
+#include "CallbackHelper.h"
 
 void freeFunction()
 {
@@ -31,25 +31,23 @@ void loop()
 }
 
 ```
-Of course, the same would be possible by storing a pointer to the free function and invoke it in `loop()`. The `callbackHelper` gets more useful if we want to support more complex objects as callbacks. E.g., non static member functions, lambdas or functors:
+Of course, the same would be possible by storing a pointer to the free function and invoke it in `loop()`. The `CallbackHelper` class becomes more useful if we want to support more complex objects as callbacks. E.g., non static member functions, lambdas or functors:
 
 Here an example how to generate a callback from a lambda expression:
 ```c++
 callback = cbh.makeCallback([] { Serial.printf("non capturing lambda\n"); }, 0);
 ```
 
-Generate callback from non static member function (class `Test`, instance `test` member function `void Test::myFunc()` )
+Here how to generate a callback from a non static member function (class `Test`, instance `test` member function `void Test::myFunc()` )
 ```c++
 callback = cbh.makeCallback([] {test.myFunc()); }, 0);
 ```
 
-The callbackHelper class will store the actual callback in a preallocated memory pool to avoid dynamic memory allocation.  `makeCallback(...)` returns a base class pointer to the
-generated callback. Thus, user code doesn't need to know the actual type of the generated callback. Instead, it can store the returned base class pointer for later use in a variable of type pointer to `callback_t`.
+The callbackHelper class will construct the actual callback in a preallocated memory pool to avoid dynamic memory allocation.  `makeCallback(...)` returns a base class pointer to the generated callback. Thus, user code doesn't need to know the actual type of the generated callback. Instead, it can store the returned base class pointer for later use in a variable of type pointer to `callback_t`.
 
 Here a complete example showing some possibilities:
 ```c++
-#include "Arduino.h"
-#include "callbackHelper.h"
+#include "CallbackHelper.h"
 
 // Free function callback ------------------------------------------------------
 void freeFunction()
