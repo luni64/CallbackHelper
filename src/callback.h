@@ -27,20 +27,16 @@ class Callback_fptr : public callback_t
 };
 
 // delegate to store capture-less and capturing lambdas
-template <typename T>
+template <typename lambda_t>
 class Callback_lambda : public callback_t
 {
  public:
-    Callback_lambda(const T& _lambda)
-        : lambda(_lambda)
-    {
-    }
+    Callback_lambda(lambda_t&& _lambda)
+        : lambda(std::forward<lambda_t>(_lambda))
+    {}
 
-    void invoke()
-    {
-         lambda();
-    }
+    void invoke() { lambda(); }
 
  protected:
-    const T& lambda;
+    lambda_t lambda;
 };

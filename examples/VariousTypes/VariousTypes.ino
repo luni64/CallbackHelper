@@ -2,7 +2,8 @@
 #include "CallbackHelper.h"
 
 // Free function callback ------------------------------------------------------
-void freeFunction(){
+void freeFunction()
+{
     Serial.println("Free function callback");
 }
 
@@ -10,11 +11,13 @@ void freeFunction(){
 class Test
 {
  public:
-    Test(int _i){
+    Test(int _i)
+    {
         i = _i;
     }
 
-    void someMemberFunction(float f){
+    void someMemberFunction(float f)
+    {
         Serial.printf("non static member function i=%f\n", i * f);
     }
 
@@ -22,11 +25,12 @@ class Test
 };
 Test test(42);
 
-//------------------------------------------------------
+//Using a functor as callback----------------------------------------------------
 class MyFunctor_t
 {
  public:
-    void set(int _i){
+    void set(int _i)
+    {
         i = _i;
     }
 
@@ -36,7 +40,7 @@ class MyFunctor_t
     }
 
  protected:
-    int i = 2;
+    int i = 0;
 };
 MyFunctor_t functor;
 
@@ -48,15 +52,13 @@ callback_t* cb[5];     // array to store pointers to the generated callbacks
 void setup()
 {
     // generate various callbacks and store pointers to them in the cb array
-    cb[0] = cbh.makeCallback(freeFunction, 0);                                    // convert free function to callback_t
-    cb[1] = cbh.makeCallback(functor, 1);                                         // convert a functor to callback_t
-    cb[2] = cbh.makeCallback([] { Serial.printf("non capturing lambda\n"); }, 2); // simple, non capturing lambda expression to callback_t
-    cb[3] = cbh.makeCallback([] { test.someMemberFunction(3.1415); }, 3);         // use non static member function as callback
+    cb[0] = cbh.makeCallback(freeFunction, 0);                                    // free function -> to callback_t
+    cb[1] = cbh.makeCallback(functor, 1);                                         // functor -> callback_t
+    cb[2] = cbh.makeCallback([] { Serial.printf("non capturing lambda\n"); }, 2); // simple, non capturing lambda expression -> callback_t
+    cb[3] = cbh.makeCallback([] { test.someMemberFunction(3.1415); }, 3);         // non static member function -> callback_t
 
     int i = 42;
     cb[4] = cbh.makeCallback([i] { Serial.printf("capturing lambda i=%d\n", i); }, 4); // lambda capturing a variable as callback
-
-    functor.set(123); // set some state in the functor
 }
 
 void loop()
@@ -67,6 +69,7 @@ void loop()
     }
     Serial.println();
 
-    test.i = millis(); // change state of the test class on the fly
-    delay(250);
+    test.i = millis();     // change state of the test class on the fly
+    functor.set(millis()); // change state of the functor on the fly
+    delay(500);
 }
