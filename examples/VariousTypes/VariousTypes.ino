@@ -1,56 +1,8 @@
-# CallbackHelper
-
-Helper class to generate invocable callbacks from various inputs. E.g., pointers to free functions, pointers to static member functions, lambdas (capturing an non-capturing) and functors.
-
-**Purpose** Allow library writers to implement std::function like callback APIs without the memory overhead of std::functions.
-
-**Simple usage:**
-
-```c++
 #include "Arduino.h"
-
-void freeFunction()
-{
-    Serial.println("Free function callback");
-}
-
-CallbackHelper<5> cbh; // construct a callback helper to store up to 5 callbacks
-callback_t* callback;
-
-void setup()
-{
-    // generate a callback from freeFunction, store it in slot 0 (out of 5) and
-    // store a pointer to it in callback:
-     callback = cbh.makeCallback(freeFunction, 0);
-}
-
-void loop()
-{
-    callback->invoke();
-}
-
-```
-Of course the same would be possible by storing a simple pointer to the free function and invoke it in loop(). It gets more interesting if we want to use more difficult objects as callbacks. E.g., non static member functions, lambdas:
-
-Generate callback from a lambda expression:
-```c++
-callback = cbh.makeCallback([] { Serial.printf("non capturing lambda\n"); }, 0);
-```
-
-Generate callback from non static member function (class `Test`, instance `test` member function `void Test::myFunc()` )
-```c++
-callback = cbh.makeCallback([] {test.myFunc()); }, 0);
-```
-
-Here a complete example showing the possibilities:
-
-```c++
-#include "Arduino.h"
-#include "callbackHelper.h"
+#include "CallbackHelper.h"
 
 // Free function callback ------------------------------------------------------
-void freeFunction()
-{
+void freeFunction(){
     Serial.println("Free function callback");
 }
 
@@ -78,7 +30,8 @@ class MyFunctor_t
         i = _i;
     }
 
-    void operator()() const{
+    void operator()() const
+    {
         Serial.printf("Functor i=%d\n", i);
     }
 
@@ -117,4 +70,3 @@ void loop()
     test.i = millis(); // change state of the test class on the fly
     delay(250);
 }
-```
