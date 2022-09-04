@@ -27,14 +27,14 @@ class CallbackHelper
 {
  public:
     // generates a callback from a function pointer
-    Callback* makeCallback(void (*fptr)(), unsigned slot)
+    callback_t* makeCallback(void (*fptr)(), unsigned slot)
     {
         return new (memoryPool + slot * slotSize) Callback_fptr(fptr); // please note that placement new does not allocate memory!
     }
 
     // generates a callback from anything with an operator()() const. I.e., lambdas, functors ...
     template <typename T>
-    Callback* makeCallback(const T& l, unsigned slot)
+    callback_t* makeCallback(const T& l, unsigned slot)
     {
         //static_assert(is_callable<T>::value, "class CallbackHelper: The object passed to makeCallback is not callable");
         static_assert(sizeof(T) <= slotSize, "class CallbackHelper: The object passed to makeCallback is too large");
