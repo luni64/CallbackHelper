@@ -1,10 +1,10 @@
 #pragma once
 #include "Arduino.h"
-#include "Callback.h"
+#include "callback.h"
 #include <memory>
 
 /**
- * To avoid dynamic memory allocation we need to prealocate static memory and construct the objects into this using 'placement new'
+ * To avoid dynamic memory allocation we need to preallocate static memory and construct the objects into this using 'placement new'
  * Memory usage:
  *   function pointer delegate: 4bytes
  *   capture less lambda:       1 byte
@@ -13,7 +13,7 @@
  **/
 
 
-template <unsigned nrOfSlots, size_t slotSize = 16> // use the second, optional parameter to change the slotsize if needed
+template <unsigned nrOfSlots, size_t slotSize = 16> // use the second, optional parameter to change the slot size if needed
 class CallbackHelper
 {
  public:

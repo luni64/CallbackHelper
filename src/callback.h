@@ -1,6 +1,6 @@
 #pragma once
 
-// abstract base class. Pointer to this will be stored externaly to invoke the callback later
+// abstract base class. Pointer to this will be stored externally to invoke the callback later
 struct callback_t
 {
     virtual void invoke() = 0;
