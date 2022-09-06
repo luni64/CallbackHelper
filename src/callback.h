@@ -1,42 +1,30 @@
 #pragma once
 
-// abstract base class. Pointer to this will be stored externally to invoke the callback later
-struct callback_t
+// abstract base class which will be used to invoke the callback
+template <typename T>
+class Callback;
+
+template <typename... Args>
+struct Callback<void(Args...)>
 {
-    virtual void invoke() = 0;
+    virtual void invoke(Args...) = 0;
 };
 
-// callback type which stores free functions or static member functions
-class Callback_fptr : public callback_t
+// actual callback class which stores the passed in callable (lambda, functor, free functions)
+template <typename T, typename... Args>
+class CallbackImpl : public Callback<void(Args...)>
 {
  public:
-    using fp_t = void (*)(); // type of a pointer to a void(void)  function
-
-    Callback_fptr(fp_t fp)
+    CallbackImpl(T&& _lambda)                
+        : lambda(std::forward<T>(_lambda))
     {
-        this->fp = fp;
     }
 
-    void invoke()
+    void invoke(Args... args)
     {
-        fp();
+        lambda(args...);
     }
 
  protected:
-    fp_t fp; // holds the unction pointer passed in
-};
-
-// delegate to store capture-less and capturing lambdas
-template <typename lambda_t>
-class Callback_lambda : public callback_t
-{
- public:
-    Callback_lambda(lambda_t&& _lambda)
-        : lambda(std::forward<lambda_t>(_lambda))
-    {}
-
-    void invoke() { lambda(); }
-
- protected:
-    lambda_t lambda;
+    T lambda;
 };
