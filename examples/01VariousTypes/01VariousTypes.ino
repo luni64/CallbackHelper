@@ -25,7 +25,7 @@ class Test
 };
 Test test(42);
 
-//Using a functor as callback----------------------------------------------------
+// Using a functor as callback----------------------------------------------------
 class MyFunctor_t
 {
  public:
@@ -46,8 +46,12 @@ MyFunctor_t functor;
 
 //------------------------------------------------------
 
-CallbackHelper<5> cbh; // helps to generate callbacks from various parameters (function pointers, lambdas, functors...)
-callback_t* cb[5];     // array to store pointers to the generated callbacks
+// some aliases to save typing
+using callbackHelper_t = CallbackHelper<void(void), 5>; // handles 5 slots for void(void) callbacks
+using callback_t       = callbackHelper_t::callback_t;  // type of the callbacks
+
+callbackHelper_t cbh; // helps to generate callbacks from various parameters (function pointers, lambdas, functors...)
+callback_t* cb[5];    // array to store pointers to the generated callbacks
 
 void setup()
 {

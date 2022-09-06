@@ -34,10 +34,9 @@ void setup()
 {
     // to test, uncomment one of the examples below
 
-       myPIT.begin(freeFunction, 250'000);                                                // attach a free void(void) function as callback
+    myPIT.begin(freeFunction, 250'000); // attach a free void(void) function as callback
     // myPIT.begin(myFunctor, 250'000);                                                   // invoke the function call operator of myFunctor every 250ms
     // myPIT.begin([] { Serial.println("captureless lambda called"); }, 250'000);         // attach a simple lambda expression
-
     // int i = 42;
     // myPIT.begin([i] { Serial.printf("capturing lambda called i:%d\n", i); }, 250'000); // attach a lambda expression, capturing a variable value
 }
