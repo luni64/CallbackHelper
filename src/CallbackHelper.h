@@ -25,11 +25,11 @@ class CallbackHelper< void(Args...), nrOfSlots, slotSize>
     template <typename T>
     callback_t* makeCallback(T&& lbd, size_t slot)
     {
-        return new CallbackImpl<T, Args...>(std::forward<T>(lbd));
+        return new(memoryPool + slot*slotSize) CallbackImpl<T, Args...>(std::forward<T>(lbd));
     }
 
  protected:
-  // uint8_t memoryPool[slotSize * nrOfSlots]; // since we want to avoid dynamic memory allocation we need to reserve the required memory for the delegates statically
+   uint8_t memoryPool[slotSize * nrOfSlots]; // since we want to avoid dynamic memory allocation we need to reserve the required memory for the delegates statically
 };
 
 // #pragma once
