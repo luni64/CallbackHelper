@@ -1,16 +1,9 @@
 #pragma once
 #include "callbackHelper.h"
 
-
 class PIT
 {
  public:
-    void begin(void (*cb)(), float period)  // normal free function, static member function, captureless lambdas
-    {                                       //
-        callback = cbh.makeCallback(cb, 0); // generate a delegate from the parameters and store it for calling from the ISR
-        initPIT(period);                    // setup PIT module
-    }
-
     template <class T>
     void begin(T&& lambda, float period)                         // lambdas, functors etc.
     {                                                            //
@@ -48,8 +41,11 @@ class PIT
         PIT_TCTRL0 = PIT_TCTRL_TEN | PIT_TCTRL_TIE; // enable channel and generate interrupts on overflow
     }
 
-    CallbackHelper<1> cbh;       // use a callback helper which manages the callback for the PIT (for the sake of simplicity we only use PIT channel 0 here)
+    using callbackHelper_t = CallbackHelper<void(void), 5>; // handles 5 slots for void(void) callbacks
+    using callback_t       = callbackHelper_t::callback_t;  // type of the callbacks
+
+    callbackHelper_t cbh;       // use a callback helper which manages the callback for the PIT (for the sake of simplicity we only use PIT channel 0 here)
     static callback_t* callback; // in a real implementation this would be a static array of 4 callback_t pointers
 };
 
-callback_t* PIT::callback = nullptr;
+PIT::callback_t* PIT::callback = nullptr;
