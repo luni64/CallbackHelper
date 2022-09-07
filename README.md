@@ -10,13 +10,17 @@ Simple example:
 ```c++
 #include "CallbackHelper.h"
 
+// setup the callback helper
+using callbackHelper_t = CallbackHelper<void(void), 1>; // handles 1 slot for void(void) callbacks
+using callback_t       = callbackHelper_t::callback_t;  // type of the callbacks
+
+callbackHelper_t cbh; // helps to generate callbacks from various parameters (function pointers, lambdas, functors...)
+callback_t* callback;    // array to store pointers to the generated callbacks
+
 void freeFunction()
 {
     Serial.println("Free function callback");
 }
-
-CallbackHelper<5> cbh; // construct a callback helper to store up to 5 callbacks
-callback_t* callback;
 
 void setup()
 {
@@ -29,7 +33,6 @@ void loop()
 {
     callback->invoke();
 }
-
 ```
 Of course, the same would be possible by storing a pointer to the free function and invoke it in `loop()`. The `CallbackHelper` class becomes more useful if we want to support more complex objects as callbacks. E.g., non static member functions, lambdas or functors:
 
