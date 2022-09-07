@@ -1,7 +1,6 @@
 #pragma once
 #include "Arduino.h"
 #include "callback.h"
-#include <array>
 #include <memory>
 
 // /**
@@ -29,16 +28,13 @@ class CallbackHelper<void(Args...), nrOfSlots, slotSize>
         // make sure user doesn't pass a too large object (e.g. lambda with too much captured parameters) write out of bounds or a slot number larger than nrOfSlots
         if (slot >= nrOfSlots) return nullptr;
         static_assert(sizeof(CallbackImpl<T, Args...>) <= slotSize,
-                      "\n****************************************************************************************************"
-                      "\n* CallbackHelper::makeCallback Object too large. Consider increasing slot space for CallbackHelper *"
-                      "\n**************************************************************************************************** ");
+         "\n****************************************************************************************************"
+         "\n* CallbackHelper::makeCallback Object too large. Consider increasing slot space for CallbackHelper *"
+         "\n**************************************************************************************************** ");
 
         return new (&(memoryPool[slot])) CallbackImpl<T, Args...>(std::forward<T>(lbd));
     }
 
  protected:
-    //  std::array<uint8_t, slotSize> slotPool;
-    //  std::array<std::array<uint8_t, slotSize>,nrOfSlots> memoryPool;
-
     uint8_t memoryPool[nrOfSlots][slotSize]; // since we want to avoid dynamic memory allocation we need to reserve the required memory for the delegates statically
 };
