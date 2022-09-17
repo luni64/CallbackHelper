@@ -1,3 +1,8 @@
+----
+**Please also look at https://github.com/luni64/staticFunctional which provides a lightweight, static memory only, drop in replacement for std::function and is more easy to use** 
+----
+
+
 # CallbackHelper
 
 ### Purpose:
